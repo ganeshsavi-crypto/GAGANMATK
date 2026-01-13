@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHRIMATKABOSS - Daily Game Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        header { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+        h1 { font-size: 28px; margin-bottom: 5px; }
+        .tagline { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 14px; }
+        .date { background: #e8eaf6; color: #1a237e; padding: 10px; text-align: center; font-weight: bold; font-size: 18px; }
+        .game { background: #f8f9fa; margin: 15px; padding: 15px; border-radius: 8px; border-left: 4px solid #1a237e; }
+        .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .game-name { font-size: 20px; font-weight: bold; color: #1a237e; }
+        .game-time { background: #e3f2fd; padding: 5px 10px; border-radius: 5px; color: #1565c0; }
+        .result-row { display: flex; gap: 20px; }
+        .result-box { flex: 1; }
+        .result-title { font-weight: bold; margin-bottom: 10px; color: #555; }
+        .numbers { display: flex; gap: 10px; }
+        .number { background: #1a237e; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; }
+        .jodi-number { background: #ffc107; color: #1a237e; width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; }
+        .empty { color: #999; font-style: italic; }
+        footer { text-align: center; padding: 20px; color: #666; border-top: 1px solid #eee; }
+        .admin-link { position: fixed; top: 20px; right: 20px; background: #d32f2f; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+        .refresh-btn { background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- Admin link (only you see this) -->
+    <a href="admin.html" class="admin-link" style="display:none;" id="adminLink">
+        <i class="fas fa-cog"></i> Admin
+    </a>
 
+    <div class="container">
+        <header>
+            <h1>SHRIMATKABOSS</h1>
+            <div class="tagline">DAILY (FREE FREE FREE) GAME</div>
+        </header>
+        
+        <div class="date" id="currentDate">
+            <!-- Date will appear here -->
+        </div>
+        
+        <div id="resultsContainer">
+            <!-- Results will load here -->
+            <div style="text-align:center; padding:40px;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i><br>
+                Loading results...
+            </div>
+        </div>
+        
+        <div style="text-align:center;">
+            <button onclick="loadResults()" class="refresh-btn">
+                <i class="fas fa-redo"></i> Refresh Results
+            </button>
+        </div>
+        
+        <footer>
+            <p>SHRIMATKABOSS © 2026 | Daily Game Results</p>
+            <p style="font-size:12px; color:#999; margin-top:10px;">Results update automatically every 2 minutes</p>
+        </footer>
+    </div>
+
+    <script>
+        // Show admin link if URL has secret parameter
+        if(window.location.href.includes('admin123')) {
+            document.getElementById('adminLink').style.display = 'block';
+        }
+        
+        // Set current date
+        const today = new Date();
+        document.getElementById('currentDate').innerHTML = 
+            `<i class="fas fa-calendar-alt"></i> DATE: ${today.getDate().toString().padStart(2,'0')}/${(today.getMonth()+1).toString().padStart(2,'0')}/${today.getFullYear()}`;
+        
+        // Load results
+        function loadResults() {
+            // Try to load from localStorage first (fast)
+            const saved = localStorage.getItem('matkaResults');
+            if(saved) {
+                displayResults(JSON.parse(saved));
+            }
+            
+            // Then load from GitHub
+            fetch('results.js')
+                .then(response => response.text())
+                .then(data => {
+                    // Extract the data from JavaScript file
+                    const match = data.match(/var matkaResults = ({.*});/);
+                    if(match) {
+                        const results = JSON.parse(match[1]);
+                        localStorage.setItem('matkaResults', JSON.stringify(results));
+                        displayResults(results);
+                    }
+                })
+                .catch(error => {
+                    console.log('Using cached results');
+                });
+        }
+        
+        function displayResults(data) {
+            const container = document.getElementById('resultsContainer');
+            let html = '';
+            
+            // Define games in order
+            const games = [
+                {name: 'SRIDEVI', time: '10.00 AM'},
+                {name: 'MILAN DAY', time: '01.30 PM'},
+                {name: 'KALYAN', time: '02.30 PM'},
+                {name: 'SRIDEVI NIGHT', time: '06.30 PM'},
+                {name: 'MILAN NIGHT', time: '08.00 PM'},
+                {name: 'MAIN BAZAR', time: '08.30 PM'}
+            ];
+            
+            games.forEach(game => {
+                const gameData = data[game.name] || {open: [], jodi: []};
+                
+                html += `
+                <div class="game">
+                    <div class="game-header">
+                        <div class="game-name">${game.name}</div>
+                        <div class="game-time"><i class="far fa-clock"></i> ${game.time}</div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-box">
+                            <div class="result-title">OPEN</div>
+                            ${gameData.open.length ? 
+                                `<div class="numbers">${gameData.open.map(num => `<div class="number">${num}</div>`).join('')}</div>` :
+                                `<div class="empty">Result Awaited</div>`
+                            }
+                        </div>
+                        <div class="result-box">
+                            <div class="result-title">JODI</div>
+                            ${gameData.jodi.length ? 
+                                `<div class="numbers">${gameData.jodi.map(num => `<div class="jodi-number">${num}</div>`).join('')}</div>` :
+                                `<div class="empty">Result Awaited</div>`
+                            }
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Auto-refresh every 2 minutes
+        setInterval(loadResults, 120000);
+        
+        // Load on page load
+        loadResults();
+    </script>
+</body>
+  </html>
