@@ -6,137 +6,569 @@
     <title>SHRIMATKABOSS - Daily Game Results</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #f0f2f5; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        header { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
-        h1 { font-size: 28px; margin-bottom: 5px; }
-        .tagline { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 14px; }
-        .date { background: #e8eaf6; color: #1a237e; padding: 10px; text-align: center; font-weight: bold; font-size: 18px; }
-        .game { background: #f8f9fa; margin: 15px; padding: 15px; border-radius: 8px; border-left: 4px solid #1a237e; }
-        .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .game-name { font-size: 20px; font-weight: bold; color: #1a237e; }
-        .game-time { background: #e3f2fd; padding: 5px 10px; border-radius: 5px; color: #1565c0; }
-        .result-row { display: flex; gap: 20px; }
-        .result-box { flex: 1; }
-        .result-title { font-weight: bold; margin-bottom: 10px; color: #555; }
-        .numbers { display: flex; gap: 10px; }
-        .number { background: #1a237e; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; }
-        .jodi-number { background: #ffc107; color: #1a237e; width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; }
-        .empty { color: #999; font-style: italic; }
-        footer { text-align: center; padding: 20px; color: #666; border-top: 1px solid #eee; }
-        .admin-link { position: fixed; top: 20px; right: 20px; background: #d32f2f; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; }
-        .refresh-btn { background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50px, -50px) rotate(360deg); }
+        }
+        
+        .brand {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        .tagline {
+            display: inline-block;
+            background: rgba(255, 193, 7, 0.9);
+            color: #1a237e;
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+        
+        .date-display {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #1a237e;
+            border-bottom: 3px dashed #90caf9;
+        }
+        
+        .date-display i {
+            margin-right: 10px;
+            color: #ff9800;
+        }
+        
+        .results-container {
+            padding: 25px;
+            min-height: 400px;
+        }
+        
+        .game-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 8px solid #1a237e;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffc107, #ff9800, #ff5722);
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .game-time {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #1565c0;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(21, 101, 192, 0.2);
+        }
+        
+        .game-time i {
+            margin-right: 8px;
+            color: #ff9800;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .result-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e0e0e0;
+        }
+        
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .result-title i {
+            color: #1a237e;
+        }
+        
+        .numbers-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .number {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .number::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+            background-size: 10px 10px;
+            animation: shine 3s linear infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .jodi-number {
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .number:hover, .jodi-number:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .empty-result {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+            font-size: 18px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+        }
+        
+        .empty-result i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #bbb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1a237e;
+        }
+        
+        .loading h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            padding: 25px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-top: 3px solid #dee2e6;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(76, 175, 80, 0.4);
+            background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
+        }
+        
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+        
+        .auto-update {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .auto-update i {
+            color: #4caf50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-top: 5px solid #ffc107;
+        }
+        
+        .copyright {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .update-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .admin-link {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(211, 47, 47, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            .number, .jodi-number {
+                width: 55px;
+                height: 55px;
+                font-size: 22px;
+            }
+            
+            .admin-link {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Admin link (only you see this) -->
-    <a href="admin.html" class="admin-link" style="display:none;" id="adminLink">
-        <i class="fas fa-cog"></i> Admin
+    <!-- Admin Access Link -->
+    <a href="admin.html" class="admin-link" id="adminLink">
+        <i class="fas fa-cog"></i> Admin Panel
     </a>
 
     <div class="container">
         <header>
-            <h1>SHRIMATKABOSS</h1>
-            <div class="tagline">DAILY (FREE FREE FREE) GAME</div>
+            <div class="brand">
+                <h1>SHRIMATKABOSS</h1>
+                <div class="tagline">DAILY (FREE FREE FREE) GAME</div>
+            </div>
         </header>
         
-        <div class="date" id="currentDate">
-            <!-- Date will appear here -->
+        <div class="date-display">
+            <i class="fas fa-calendar-alt"></i> 
+            <span id="currentDate">DATE: 13/01/2026</span>
         </div>
         
-        <div id="resultsContainer">
-            <!-- Results will load here -->
-            <div style="text-align:center; padding:40px;">
-                <i class="fas fa-spinner fa-spin fa-2x"></i><br>
-                Loading results...
+        <div class="results-container" id="resultsContainer">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <h3>Loading results...</h3>
+                <p>Please wait while we fetch the latest results</p>
             </div>
         </div>
         
-        <div style="text-align:center;">
-            <button onclick="loadResults()" class="refresh-btn">
+        <div class="controls">
+            <button class="refresh-btn" onclick="loadResults(true)">
                 <i class="fas fa-redo"></i> Refresh Results
             </button>
+            <div class="auto-update">
+                <i class="fas fa-sync-alt"></i>
+                <span>Auto-updates every 30 seconds</span>
+            </div>
         </div>
         
         <footer>
-            <p>SHRIMATKABOSS © 2026 | Daily Game Results</p>
-            <p style="font-size:12px; color:#999; margin-top:10px;">Results update automatically every 2 minutes</p>
+            <div class="copyright">
+                SHRIMATKABOSS © 2026 | Daily Game Results
+            </div>
+            <div class="update-info">
+                <i class="fas fa-bolt"></i>
+                <span>Results update automatically every 2 minutes</span>
+            </div>
         </footer>
     </div>
 
     <script>
-        // Show admin link if URL has secret parameter
-        if(window.location.href.includes('admin123')) {
-            document.getElementById('adminLink').style.display = 'block';
-        }
-        
         // Set current date
         const today = new Date();
-        document.getElementById('currentDate').innerHTML = 
-            `<i class="fas fa-calendar-alt"></i> DATE: ${today.getDate().toString().padStart(2,'0')}/${(today.getMonth()+1).toString().padStart(2,'0')}/${today.getFullYear()}`;
+        const formattedDate = `${today.getDate().toString().padStart(2,'0')}/${(today.getMonth()+1).toString().padStart(2,'0')}/${today.getFullYear()}`;
+        document.getElementById('currentDate').textContent = `DATE: ${formattedDate}`;
         
-        // Load results
-        function loadResults() {
-            // Try to load from localStorage first (fast)
-            const saved = localStorage.getItem('matkaResults');
-            if(saved) {
-                displayResults(JSON.parse(saved));
-            }
-            
-            // Then load from GitHub
-            fetch('results.js')
-                .then(response => response.text())
-                .then(data => {
-                    // Extract the data from JavaScript file
-                    const match = data.match(/var matkaResults = ({.*});/);
-                    if(match) {
-                        const results = JSON.parse(match[1]);
-                        localStorage.setItem('matkaResults', JSON.stringify(results));
-                        displayResults(results);
-                    }
-                })
-                .catch(error => {
-                    console.log('Using cached results');
-                });
+        // Check if we have admin access
+        if(window.location.search.includes('admin')) {
+            document.getElementById('adminLink').style.display = 'flex';
         }
         
+        // Function to load and display results
+        async function loadResults(forceRefresh = false) {
+            try {
+                // Show loading
+                document.getElementById('resultsContainer').innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <h3>Loading results...</h3>
+                    </div>
+                `;
+                
+                // Add cache busting if forcing refresh
+                const url = forceRefresh 
+                    ? `results.js?t=${Date.now()}`
+                    : 'results.js';
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load results: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                
+                // Extract data from JavaScript file
+                const match = text.match(/var matkaResults\s*=\s*(\{[\s\S]*\});/);
+                
+                if (!match) {
+                    throw new Error('Invalid data format');
+                }
+                
+                const results = JSON.parse(match[1]);
+                displayResults(results);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('resultsContainer').innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error Loading Results</h3>
+                        <p>${error.message}</p>
+                        <button class="refresh-btn" onclick="loadResults(true)" style="margin-top: 20px;">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Function to display results
         function displayResults(data) {
             const container = document.getElementById('resultsContainer');
             let html = '';
             
-            // Define games in order
+            // Games in order
             const games = [
-                {name: 'SRIDEVI', time: '10.00 AM'},
-                {name: 'MILAN DAY', time: '01.30 PM'},
-                {name: 'KALYAN', time: '02.30 PM'},
-                {name: 'SRIDEVI NIGHT', time: '06.30 PM'},
-                {name: 'MILAN NIGHT', time: '08.00 PM'},
-                {name: 'MAIN BAZAR', time: '08.30 PM'}
+                {name: 'SRIDEVI', defaultTime: '10.00 AM'},
+                {name: 'MILAN DAY', defaultTime: '01.30 PM'},
+                {name: 'KALYAN', defaultTime: '02.30 PM'},
+                {name: 'SRIDEVI NIGHT', defaultTime: '06.30 PM'},
+                {name: 'MILAN NIGHT', defaultTime: '08.00 PM'},
+                {name: 'MAIN BAZAR', defaultTime: '08.30 PM'}
             ];
             
             games.forEach(game => {
                 const gameData = data[game.name] || {open: [], jodi: []};
+                const time = gameData.time || game.defaultTime;
                 
                 html += `
-                <div class="game">
+                <div class="game-card">
                     <div class="game-header">
-                        <div class="game-name">${game.name}</div>
-                        <div class="game-time"><i class="far fa-clock"></i> ${game.time}</div>
+                        <div class="game-name">
+                            <i class="fas fa-dice"></i> ${game.name}
+                        </div>
+                        <div class="game-time">
+                            <i class="far fa-clock"></i> ${time}
+                        </div>
                     </div>
-                    <div class="result-row">
+                    <div class="results-grid">
                         <div class="result-box">
-                            <div class="result-title">OPEN</div>
-                            ${gameData.open.length ? 
-                                `<div class="numbers">${gameData.open.map(num => `<div class="number">${num}</div>`).join('')}</div>` :
-                                `<div class="empty">Result Awaited</div>`
+                            <div class="result-title">
+                                <i class="fas fa-lock-open"></i> OPEN
+                            </div>
+                            ${gameData.open && gameData.open.length > 0 
+                                ? `<div class="numbers-container">${gameData.open.map(num => `<div class="number">${num}</div>`).join('')}</div>`
+                                : `<div class="empty-result"><i class="far fa-clock"></i> Result Awaited</div>`
                             }
                         </div>
                         <div class="result-box">
-                            <div class="result-title">JODI</div>
-                            ${gameData.jodi.length ? 
-                                `<div class="numbers">${gameData.jodi.map(num => `<div class="jodi-number">${num}</div>`).join('')}</div>` :
-                                `<div class="empty">Result Awaited</div>`
+                            <div class="result-title">
+                                <i class="fas fa-link"></i> JODI
+                            </div>
+                            ${gameData.jodi && gameData.jodi.length > 0 
+                                ? `<div class="numbers-container">${gameData.jodi.map(num => `<div class="jodi-number">${num}</div>`).join('')}</div>`
+                                : `<div class="empty-result"><i class="far fa-clock"></i> Result Awaited</div>`
                             }
                         </div>
                     </div>
@@ -144,13 +576,28 @@
             });
             
             container.innerHTML = html;
+            
+            // Add animations
+            setTimeout(() => {
+                const numbers = document.querySelectorAll('.number, .jodi-number');
+                numbers.forEach((num, index) => {
+                    num.style.opacity = '0';
+                    num.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        num.style.transition = 'all 0.5s ease';
+                        num.style.opacity = '1';
+                        num.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 100);
         }
         
-        // Auto-refresh every 2 minutes
-        setInterval(loadResults, 120000);
+        // Auto-refresh every 30 seconds
+        setInterval(() => loadResults(), 30000);
         
-        // Load on page load
+        // Load results on page load
         loadResults();
     </script>
 </body>
-  </html>
+</html>
