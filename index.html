@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHRIMATKABOSS - Daily Game Results</title>
+    <title>Admin - Update Results</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
             min-height: 100vh;
             padding: 20px;
             display: flex;
@@ -31,573 +31,390 @@
             overflow: hidden;
         }
         
-        header {
-            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+        .admin-header {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
             color: white;
             padding: 30px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
         
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: float 20s linear infinite;
-        }
-        
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-50px, -50px) rotate(360deg); }
-        }
-        
-        .brand {
-            position: relative;
-            z-index: 1;
-        }
-        
-        h1 {
-            font-size: 42px;
+        .admin-header h1 {
+            font-size: 36px;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 2px;
         }
         
-        .tagline {
-            display: inline-block;
-            background: rgba(255, 193, 7, 0.9);
-            color: #1a237e;
-            padding: 8px 25px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        .admin-header p {
+            opacity: 0.9;
         }
         
-        .date-display {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            padding: 15px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            color: #1a237e;
-            border-bottom: 3px dashed #90caf9;
+        .admin-content {
+            padding: 30px;
         }
         
-        .date-display i {
-            margin-right: 10px;
-            color: #ff9800;
-        }
-        
-        .results-container {
+        .game-edit {
+            background: #f8f9fa;
             padding: 25px;
-            min-height: 400px;
-        }
-        
-        .game-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            margin-bottom: 20px;
-            padding: 25px;
+            margin-bottom: 25px;
             border-radius: 15px;
             border-left: 8px solid #1a237e;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
         
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-        
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ffc107, #ff9800, #ff5722);
-        }
-        
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .game-name {
-            font-size: 26px;
+        .game-title {
+            font-size: 24px;
             font-weight: bold;
             color: #1a237e;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .game-time {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            color: #1565c0;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(21, 101, 192, 0.2);
+        .input-group {
+            margin-bottom: 20px;
         }
         
-        .game-time i {
-            margin-right: 8px;
-            color: #ff9800;
-        }
-        
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        
-        .result-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 2px solid #e0e0e0;
-        }
-        
-        .result-title {
-            font-size: 18px;
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: bold;
             color: #555;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
-        }
-        
-        .result-title i {
-            color: #1a237e;
-        }
-        
-        .numbers-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .number {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .number::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
-            background-size: 10px 10px;
-            animation: shine 3s linear infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-        
-        .jodi-number {
-            width: 65px;
-            height: 65px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-            color: #1a237e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .number:hover, .jodi-number:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-        
-        .empty-result {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-style: italic;
-            font-size: 18px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            border: 2px dashed #ddd;
-        }
-        
-        .empty-result i {
-            font-size: 24px;
-            margin-right: 10px;
-            color: #bbb;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: #666;
-        }
-        
-        .loading i {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #1a237e;
-        }
-        
-        .loading h3 {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-        
-        .controls {
-            padding: 25px;
-            text-align: center;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-top: 3px solid #dee2e6;
-        }
-        
-        .refresh-btn {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
-            color: white;
-            border: none;
-            padding: 16px 35px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .refresh-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(76, 175, 80, 0.4);
-            background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
-        }
-        
-        .refresh-btn:active {
-            transform: translateY(0);
-        }
-        
-        .auto-update {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 8px;
         }
         
-        .auto-update i {
-            color: #4caf50;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        footer {
-            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            border-top: 5px solid #ffc107;
-        }
-        
-        .copyright {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        
-        .update-info {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .admin-link {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            text-decoration: none;
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: bold;
-            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
+            text-align: center;
             transition: all 0.3s ease;
         }
         
-        .admin-link:hover {
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+        
+        .numbers-input {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .preview-box {
+            background: white;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .preview-box h3 {
+            color: #1a237e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-code {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
             transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(211, 47, 47, 0.4);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-preview {
+            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+            color: white;
+        }
+        
+        .btn-preview:hover {
+            background: linear-gradient(135deg, #1e88e5 0%, #0d2d69 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: linear-gradient(135deg, #fb8c00 0%, #ef6c00 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+            display: block;
+        }
+        
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+            display: block;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .instructions h3 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .back-link a {
+            color: #1a237e;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: #f0f7ff;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link a:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @media (max-width: 768px) {
-            .results-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+            .numbers-input {
+                grid-template-columns: repeat(2, 1fr);
             }
             
-            .game-header {
+            .actions {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            h1 {
-                font-size: 32px;
-            }
-            
-            .number, .jodi-number {
-                width: 55px;
-                height: 55px;
-                font-size: 22px;
-            }
-            
-            .admin-link {
-                top: 10px;
-                right: 10px;
-                padding: 10px 15px;
-                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Admin Access Link -->
-    <a href="admin.html" class="admin-link" id="adminLink">
-        <i class="fas fa-cog"></i> Admin Panel
-    </a>
-
     <div class="container">
-        <header>
-            <div class="brand">
-                <h1>SHRIMATKABOSS</h1>
-                <div class="tagline">DAILY (FREE FREE FREE) GAME</div>
-            </div>
-        </header>
-        
-        <div class="date-display">
-            <i class="fas fa-calendar-alt"></i> 
-            <span id="currentDate">DATE: 13/01/2026</span>
+        <div class="admin-header">
+            <h1><i class="fas fa-lock"></i> ADMIN PANEL</h1>
+            <p>Update Game Results (This page is not visible to users)</p>
         </div>
         
-        <div class="results-container" id="resultsContainer">
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <h3>Loading results...</h3>
-                <p>Please wait while we fetch the latest results</p>
-            </div>
-        </div>
-        
-        <div class="controls">
-            <button class="refresh-btn" onclick="loadResults(true)">
-                <i class="fas fa-redo"></i> Refresh Results
-            </button>
-            <div class="auto-update">
-                <i class="fas fa-sync-alt"></i>
-                <span>Auto-updates every 30 seconds</span>
-            </div>
-        </div>
-        
-        <footer>
-            <div class="copyright">
-                SHRIMATKABOSS © 2026 | Daily Game Results
-            </div>
-            <div class="update-info">
-                <i class="fas fa-bolt"></i>
-                <span>Results update automatically every 2 minutes</span>
-            </div>
-        </footer>
-    </div>
-
-    <script>
-        // Set current date
-        const today = new Date();
-        const formattedDate = `${today.getDate().toString().padStart(2,'0')}/${(today.getMonth()+1).toString().padStart(2,'0')}/${today.getFullYear()}`;
-        document.getElementById('currentDate').textContent = `DATE: ${formattedDate}`;
-        
-        // Check if we have admin access
-        if(window.location.search.includes('admin')) {
-            document.getElementById('adminLink').style.display = 'flex';
-        }
-        
-        // Function to load and display results
-        async function loadResults(forceRefresh = false) {
-            try {
-                // Show loading
-                document.getElementById('resultsContainer').innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <h3>Loading results...</h3>
-                    </div>
-                `;
-                
-                // Add cache busting if forcing refresh
-                const url = forceRefresh 
-                    ? `results.js?t=${Date.now()}`
-                    : 'results.js';
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to load results: ${response.status}`);
-                }
-                
-                const text = await response.text();
-                
-                // Extract data from JavaScript file
-                const match = text.match(/var matkaResults\s*=\s*(\{[\s\S]*\});/);
-                
-                if (!match) {
-                    throw new Error('Invalid data format');
-                }
-                
-                const results = JSON.parse(match[1]);
-                displayResults(results);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('resultsContainer').innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Results</h3>
-                        <p>${error.message}</p>
-                        <button class="refresh-btn" onclick="loadResults(true)" style="margin-top: 20px;">
-                            <i class="fas fa-redo"></i> Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-        
-        // Function to display results
-        function displayResults(data) {
-            const container = document.getElementById('resultsContainer');
-            let html = '';
+        <div class="admin-content">
+            <div id="message" class="message"></div>
             
-            // Games in order
-            const games = [
-                {name: 'SRIDEVI', defaultTime: '10.00 AM'},
-                {name: 'MILAN DAY', defaultTime: '01.30 PM'},
-                {name: 'KALYAN', defaultTime: '02.30 PM'},
-                {name: 'SRIDEVI NIGHT', defaultTime: '06.30 PM'},
-                {name: 'MILAN NIGHT', defaultTime: '08.00 PM'},
-                {name: 'MAIN BAZAR', defaultTime: '08.30 PM'}
-            ];
-            
-            games.forEach(game => {
-                const gameData = data[game.name] || {open: [], jodi: []};
-                const time = gameData.time || game.defaultTime;
+            <!-- SRIDEVI -->
+            <div class="game-edit">
+                <div class="game-title">
+                    <i class="fas fa-dice"></i> SRIDEVI
+                </div>
                 
-                html += `
-                <div class="game-card">
-                    <div class="game-header">
-                        <div class="game-name">
-                            <i class="fas fa-dice"></i> ${game.name}
-                        </div>
-                        <div class="game-time">
-                            <i class="far fa-clock"></i> ${time}
-                        </div>
+                <div class="input-group">
+                    <label><i class="far fa-clock"></i> Time</label>
+                    <input type="text" id="srideviTime" value="10.00 AM">
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-lock-open"></i> OPEN Numbers (4 single digits)</label>
+                    <div class="numbers-input">
+                        <input type="text" id="srideviOpen1" value="2" maxlength="1" placeholder="0">
+                        <input type="text" id="srideviOpen2" value="7" maxlength="1" placeholder="0">
+                        <input type="text" id="srideviOpen3" value="5" maxlength="1" placeholder="0">
+                        <input type="text" id="srideviOpen4" value="0" maxlength="1" placeholder="0">
                     </div>
-                    <div class="results-grid">
-                        <div class="result-box">
-                            <div class="result-title">
-                                <i class="fas fa-lock-open"></i> OPEN
-                            </div>
-                            ${gameData.open && gameData.open.length > 0 
-                                ? `<div class="numbers-container">${gameData.open.map(num => `<div class="number">${num}</div>`).join('')}</div>`
-                                : `<div class="empty-result"><i class="far fa-clock"></i> Result Awaited</div>`
-                            }
-                        </div>
-                        <div class="result-box">
-                            <div class="result-title">
-                                <i class="fas fa-link"></i> JODI
-                            </div>
-                            ${gameData.jodi && gameData.jodi.length > 0 
-                                ? `<div class="numbers-container">${gameData.jodi.map(num => `<div class="jodi-number">${num}</div>`).join('')}</div>`
-                                : `<div class="empty-result"><i class="far fa-clock"></i> Result Awaited</div>`
-                            }
-                        </div>
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-link"></i> JODI Numbers (4 two-digit numbers)</label>
+                    <div class="numbers-input">
+                        <input type="text" id="srideviJodi1" value="25" maxlength="2" placeholder="00">
+                        <input type="text" id="srideviJodi2" value="70" maxlength="2" placeholder="00">
+                        <input type="text" id="srideviJodi3" value="52" maxlength="2" placeholder="00">
+                        <input type="text" id="srideviJodi4" value="07" maxlength="2" placeholder="00">
                     </div>
-                </div>`;
-            });
+                </div>
+            </div>
             
-            container.innerHTML = html;
+            <!-- MILAN DAY -->
+            <div class="game-edit">
+                <div class="game-title">
+                    <i class="fas fa-dice"></i> MILAN DAY
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="far fa-clock"></i> Time</label>
+                    <input type="text" id="milanDayTime" value="01.30 PM">
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-lock-open"></i> OPEN Numbers</label>
+                    <div class="numbers-input">
+                        <input type="text" id="milanDayOpen1" value="3" maxlength="1" placeholder="0">
+                        <input type="text" id="milanDayOpen2" value="8" maxlength="1" placeholder="0">
+                        <input type="text" id="milanDayOpen3" value="1" maxlength="1" placeholder="0">
+                        <input type="text" id="milanDayOpen4" value="4" maxlength="1" placeholder="0">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-link"></i> JODI Numbers</label>
+                    <div class="numbers-input">
+                        <input type="text" id="milanDayJodi1" value="38" maxlength="2" placeholder="00">
+                        <input type="text" id="milanDayJodi2" value="81" maxlength="2" placeholder="00">
+                        <input type="text" id="milanDayJodi3" value="14" maxlength="2" placeholder="00">
+                        <input type="text" id="milanDayJodi4" value="43" maxlength="2" placeholder="00">
+                    </div>
+                </div>
+            </div>
             
-            // Add animations
-            setTimeout(() => {
-                const numbers = document.querySelectorAll('.number, .jodi-number');
-                numbers.forEach((num, index) => {
-                    num.style.opacity = '0';
-                    num.style.transform = 'translateY(20px)';
-                    
-                    setTimeout(() => {
-                        num.style.transition = 'all 0.5s ease';
-                        num.style.opacity = '1';
-                        num.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            }, 100);
-        }
-        
-        // Auto-refresh every 30 seconds
-        setInterval(() => loadResults(), 30000);
-        
-        // Load results on page load
-        loadResults();
-    </script>
-</body>
-</html>
+            <!-- KALYAN -->
+            <div class="game-edit">
+                <div class="game-title">
+                    <i class="fas fa-dice"></i> KALYAN
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="far fa-clock"></i> Time</label>
+                    <input type="text" id="kalyanTime" value="02.30 PM">
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-lock-open"></i> OPEN Numbers</label>
+                    <div class="numbers-input">
+                        <input type="text" id="kalyanOpen1" value="9" maxlength="1" placeholder="0">
+                        <input type="text" id="kalyanOpen2" value="2" maxlength="1" placeholder="0">
+                        <input type="text" id="kalyanOpen3" value="6" maxlength="1" placeholder="0">
+                        <input type="text" id="kalyanOpen4" value="5" maxlength="1" placeholder="0">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-link"></i> JODI Numbers</label>
+                    <div class="numbers-input">
+                        <input type="text" id="kalyanJodi1" value="92" maxlength="2" placeholder="00">
+                        <input type="text" id="kalyanJodi2" value="26" maxlength="2" placeholder="00">
+                        <input type="text" id="kalyanJodi3" value="65" maxlength="2" placeholder="00">
+                        <input type="text" id="kalyanJodi4" value="59" maxlength="2" placeholder="00">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview Box -->
+            <div id="previewBox" class="preview-box" style="display: none;">
+                <h3><i class="fas fa-code"></i> Generated JavaScript Code</h3>
+                <p>Copy this code and replace the content in <strong>results.js</strong> file:</p>
+                <div id="previewCode" class="preview-code"></div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="actions">
+                <button class="btn btn-preview" onclick="previewResults()">
+                    <i class="fas fa-eye"></i> Generate Code
+                </button>
+                <button class="btn btn-save" onclick="copyCode()">
+                    <i class="fas fa-copy"></i> Copy to Clipboard
+                </button>
+                <button class="btn btn-clear" onclick="clearAll()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> How to Update Results</h3>
+                <ol>
+                    <li>Fill in the numbers for each game above</li>
+                    <li>Click "Generate Code" to create the JavaScript code</li>
+                    <li>Click "Copy to Clipboard" to copy the code</li>
+                    <li>Go to your GitHub repository</li>
+                    <li>Open the <strong>results.js</strong> file</li>
+                    <li>Click the edit button (pencil icon)</li>
+                    <li>Delete all existing content and paste the new code</li>
+                    <li
