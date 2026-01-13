@@ -417,4 +417,205 @@
                     <li>Open the <strong>results.js</strong> file</li>
                     <li>Click the edit button (pencil icon)</li>
                     <li>Delete all existing content and paste the new code</li>
-                    <li
+                    <li>Click "Commit changes" to save</li>
+                    <li>The main page will update automatically within 2 minutes</li>
+                </ol>
+            </div>
+            
+            <div class="back-link">
+                <a href="index.html">
+                    <i class="fas fa-arrow-left"></i> Back to Results Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show message
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${text}`;
+            messageEl.className = `message ${type}`;
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Get all game data
+        function getAllGameData() {
+            const games = [
+                {
+                    name: 'SRIDEVI',
+                    prefix: 'sridevi',
+                    defaultTime: '10.00 AM'
+                },
+                {
+                    name: 'MILAN DAY',
+                    prefix: 'milanDay',
+                    defaultTime: '01.30 PM'
+                },
+                {
+                    name: 'KALYAN',
+                    prefix: 'kalyan',
+                    defaultTime: '02.30 PM'
+                },
+                {
+                    name: 'SRIDEVI NIGHT',
+                    prefix: 'srideviNight',
+                    defaultTime: '06.30 PM'
+                },
+                {
+                    name: 'MILAN NIGHT',
+                    prefix: 'milanNight',
+                    defaultTime: '08.00 PM'
+                },
+                {
+                    name: 'MAIN BAZAR',
+                    prefix: 'mainBazar',
+                    defaultTime: '08.30 PM'
+                }
+            ];
+            
+            const results = {
+                "lastUpdated": new Date().toISOString()
+            };
+            
+            games.forEach(game => {
+                const timeEl = document.getElementById(`${game.prefix}Time`);
+                const time = timeEl ? timeEl.value : game.defaultTime;
+                
+                // Get OPEN numbers
+                const open = [];
+                for (let i = 1; i <= 4; i++) {
+                    const input = document.getElementById(`${game.prefix}Open${i}`);
+                    if (input && input.value.trim() !== '') {
+                        open.push(input.value.trim());
+                    }
+                }
+                
+                // Get JODI numbers
+                const jodi = [];
+                for (let i = 1; i <= 4; i++) {
+                    const input = document.getElementById(`${game.prefix}Jodi${i}`);
+                    if (input && input.value.trim() !== '') {
+                        jodi.push(input.value.trim());
+                    }
+                }
+                
+                results[game.name] = {
+                    time: time,
+                    open: open,
+                    jodi: jodi
+                };
+            });
+            
+            return results;
+        }
+        
+        // Generate and preview results
+        function previewResults() {
+            const results = getAllGameData();
+            
+            // Create the JavaScript code
+            const jsCode = `// Matka Results Data File
+// LAST UPDATED: ${new Date().toLocaleDateString()}
+// To update results: Edit the numbers below and save this file
+
+var matkaResults = ${JSON.stringify(results, null, 4)};
+
+// IMPORTANT: After changing numbers above, save this file
+// The main page will automatically show updated results`;
+            
+            // Show preview
+            document.getElementById('previewCode').textContent = jsCode;
+            document.getElementById('previewBox').style.display = 'block';
+            
+            // Scroll to preview
+            document.getElementById('previewBox').scrollIntoView({ behavior: 'smooth' });
+            
+            showMessage('Code generated successfully! Click "Copy to Clipboard" then update results.js on GitHub.', 'success');
+        }
+        
+        // Copy code to clipboard
+        function copyCode() {
+            const codeElement = document.getElementById('previewCode');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            showMessage('Code copied to clipboard! Now go to GitHub and update results.js file.', 'success');
+        }
+        
+        // Clear all inputs
+        function clearAll() {
+            if (confirm('Clear all numbers?')) {
+                const inputs = document.querySelectorAll('input[type="text"]');
+                inputs.forEach(input => {
+                    if (!input.id.includes('Time')) {
+                        input.value = '';
+                    }
+                });
+                showMessage('All numbers cleared.', 'success');
+            }
+        }
+        
+        // Load existing data on page load
+        window.onload = async function() {
+            try {
+                // Try to load current results
+                const response = await fetch('results.js');
+                if (response.ok) {
+                    const text = await response.text();
+                    const match = text.match(/var matkaResults\s*=\s*(\{[\s\S]*\});/);
+                    if (match) {
+                        const results = JSON.parse(match[1]);
+                        
+                        // Pre-fill the form with existing data
+                        const games = [
+                            {name: 'SRIDEVI', prefix: 'sridevi'},
+                            {name: 'MILAN DAY', prefix: 'milanDay'},
+                            {name: 'KALYAN', prefix: 'kalyan'},
+                            {name: 'SRIDEVI NIGHT', prefix: 'srideviNight'},
+                            {name: 'MILAN NIGHT', prefix: 'milanNight'},
+                            {name: 'MAIN BAZAR', prefix: 'mainBazar'}
+                        ];
+                        
+                        games.forEach(game => {
+                            const gameData = results[game.name];
+                            if (gameData) {
+                                // Time
+                                const timeEl = document.getElementById(`${game.prefix}Time`);
+                                if (timeEl) timeEl.value = gameData.time;
+                                
+                                // OPEN numbers
+                                if (gameData.open) {
+                                    gameData.open.forEach((num, index) => {
+                                        const input = document.getElementById(`${game.prefix}Open${index + 1}`);
+                                        if (input) input.value = num;
+                                    });
+                                }
+                                
+                                // JODI numbers
+                                if (gameData.jodi) {
+                                    gameData.jodi.forEach((num, index) => {
+                                        const input = document.getElementById(`${game.prefix}Jodi${index + 1}`);
+                                        if (input) input.value = num;
+                                    });
+                                }
+                            }
+                        });
+                        
+                        showMessage('Loaded existing results data.', 'success');
+                    }
+                }
+            } catch (error) {
+                console.log('No existing data found or error loading');
+            }
+        };
+    </script>
+</body>
+</html>
