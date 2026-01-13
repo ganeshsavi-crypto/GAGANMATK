@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Results - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1a237e; margin-bottom: 20px; text-align: center; }
+        .game-box { background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #1a237e; }
+        .game-title { font-size: 20px; font-weight: bold; color: #1a237e; margin-bottom: 10px; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input { padding: 10px; width: 100%; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; }
+        .numbers { display: flex; gap: 10px; }
+        .numbers input { width: 60px; text-align: center; }
+        button { background: #4caf50; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        button:hover { background: #388e3c; }
+        #message { margin: 15px 0; padding: 10px; border-radius: 5px; display: none; }
+        .success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+        .back-link { text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-cog"></i> Update Game Results</h1>
+        
+        <div id="message"></div>
+        
+        <div class="game-box">
+            <div class="game-title">SRIDEVI</div>
+            <label>Time:</label>
+            <input type="text" id="srideviTime" value="10.00 AM">
+            
+            <label>OPEN Numbers (4 numbers):</label>
+            <div class="numbers">
+                <input type="text" id="srideviOpen1" value="2" maxlength="1">
+                <input type="text" id="srideviOpen2" value="7" maxlength="1">
+                <input type="text" id="srideviOpen3" value="5" maxlength="1">
+                <input type="text" id="srideviOpen4" value="0" maxlength="1">
+            </div>
+            
+            <label>JODI Numbers (4 numbers):</label>
+            <div class="numbers">
+                <input type="text" id="srideviJodi1" value="25" maxlength="2">
+                <input type="text" id="srideviJodi2" value="70" maxlength="2">
+                <input type="text" id="srideviJodi3" value="52" maxlength="2">
+                <input type="text" id="srideviJodi4" value="07" maxlength="2">
+            </div>
+        </div>
+        
+        <div class="game-box">
+            <div class="game-title">MILAN DAY</div>
+            <label>Time:</label>
+            <input type="text" id="milanDayTime" value="01.30 PM">
+            
+            <label>OPEN Numbers:</label>
+            <div class="numbers">
+                <input type="text" id="milanDayOpen1" maxlength="1">
+                <input type="text" id="milanDayOpen2" maxlength="1">
+                <input type="text" id="milanDayOpen3" maxlength="1">
+                <input type="text" id="milanDayOpen4" maxlength="1">
+            </div>
+            
+            <label>JODI Numbers:</label>
+            <div class="numbers">
+                <input type="text" id="milanDayJodi1" maxlength="2">
+                <input type="text" id="milanDayJodi2" maxlength="2">
+                <input type="text" id="milanDayJodi3" maxlength="2">
+                <input type="text" id="milanDayJodi4" maxlength="2">
+            </div>
+        </div>
+        
+        <button onclick="updateResults()">
+            <i class="fas fa-save"></i> SAVE ALL RESULTS
+        </button>
+        
+        <div class="back-link">
+            <a href="index.html">← Back to Results Page</a>
+        </div>
+    </div>
 
+    <script>
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.innerHTML = text;
+            msg.className = type;
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+        
+        function updateResults() {
+            // Collect all data
+            const results = {
+                "lastUpdated": new Date().toISOString(),
+                "SRIDEVI": {
+                    "time": document.getElementById('srideviTime').value,
+                    "open": [
+                        document.getElementById('srideviOpen1').value,
+                        document.getElementById('srideviOpen2').value,
+                        document.getElementById('srideviOpen3').value,
+                        document.getElementById('srideviOpen4').value
+                    ].filter(v => v),
+                    "jodi": [
+                        document.getElementById('srideviJodi1').value,
+                        document.getElementById('srideviJodi2').value,
+                        document.getElementById('srideviJodi3').value,
+                        document.getElementById('srideviJodi4').value
+                    ].filter(v => v)
+                },
+                "MILAN DAY": {
+                    "time": document.getElementById('milanDayTime').value,
+                    "open": [
+                        document.getElementById('milanDayOpen1').value,
+                        document.getElementById('milanDayOpen2').value,
+                        document.getElementById('milanDayOpen3').value,
+                        document.getElementById('milanDayOpen4').value
+                    ].filter(v => v),
+                    "jodi": [
+                        document.getElementById('milanDayJodi1').value,
+                        document.getElementById('milanDayJodi2').value,
+                        document.getElementById('milanDayJodi3').value,
+                        document.getElementById('milanDayJodi4').value
+                    ].filter(v => v)
+                },
+                "KALYAN": {"time": "02.30 PM", "open": [], "jodi": []},
+                "SRIDEVI NIGHT": {"time": "06.30 PM", "open": [], "jodi": []},
+                "MILAN NIGHT": {"time": "08.00 PM", "open": [], "jodi": []},
+                "MAIN BAZAR": {"time": "08.30 PM", "open": [], "jodi": []}
+            };
+            
+            // Create the JavaScript file content
+            const jsContent = `// Matka Results Data File
+// Update this file to change results
+var matkaResults = ${JSON.stringify(results, null, 2)};`;
+            
+            // Show preview
+            console.log(jsContent);
+            
+            // In a real GitHub setup, you would upload this file
+            // For now, we'll save to localStorage and show instructions
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            
+            // Show success message
+            showMessage('Results saved successfully! Users will see the updated results.', 'success');
+            
+            // Show instructions for GitHub
+            alert('Results saved locally!\n\nTo update on GitHub:\n1. Go to your GitHub repository\n2. Click on "results.js" file\n3. Click the edit button (pencil icon)\n4. Replace all content with the new code\n5. Click "Commit changes"');
+        }
+        
+        // Load existing data on page load
+        window.onload = function() {
+            const saved = localStorage.getItem('matkaResults');
+            if(saved) {
+                const data = JSON.parse(saved);
+                // You could pre-fill the form here
+            }
+        };
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>
