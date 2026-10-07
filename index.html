@@ -26,7 +26,7 @@
   <h2>Gogami Verification</h2>
   <p>अपना WhatsApp नंबर दर्ज करके OTP प्राप्त करें</p>
 
-  <input type="text" id="phone" value="919353402523" placeholder="कंट्री कोड सहित नंबर">
+  <input type="text" id="phone" value="919113224019" placeholder="कंट्री कोड सहित नंबर">
   <button id="sendBtn" onclick="handleSendOtp()">WhatsApp पर OTP भेजें</button>
 
   <div class="verify-box" id="verifyBox">
@@ -61,6 +61,7 @@
     statusMsg.className = "msg info";
     statusMsg.innerText = "WhatsApp सर्वर से संपर्क किया जा रहा है...";
 
+    // Meta की आवश्यकतानुसार Body और Url Button दोनों में OTP पैरामीटर:
     const payload = {
       messaging_product: "whatsapp",
       to: phone,
@@ -71,6 +72,14 @@
         components: [
           {
             type: "body",
+            parameters: [
+              { type: "text", text: realOtp }
+            ]
+          },
+          {
+            type: "button",
+            sub_type: "url",
+            index: "0",
             parameters: [
               { type: "text", text: realOtp }
             ]
