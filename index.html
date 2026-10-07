@@ -12,7 +12,7 @@
     input { width: 100%; padding: 12px; margin: 8px 0 15px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
     button { width: 100%; padding: 12px; background: #25D366; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
     button:hover { background: #128C7E; }
-    .msg { margin-top: 15px; font-size: 14px; text-align: center; font-weight: bold; }
+    .msg { margin-top: 15px; font-size: 13px; text-align: center; font-weight: bold; word-break: break-word; }
     .verify-box { display: none; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
   </style>
 </head>
@@ -24,30 +24,32 @@
   <label>WhatsApp Number (Country Code के साथ):</label>
   <input type="text" id="phone" value="919353402523" placeholder="उदा: 919353402523">
   
-  <button id="sendBtn" onclick="sendOtp()">Send OTP via WhatsApp</button>
+  <button id="sendBtn" type="button">Send OTP via WhatsApp</button>
 
   <div class="verify-box" id="verifySection">
     <label>WhatsApp पर आया 6-Digit OTP डालें:</label>
     <input type="text" id="enteredOtp" placeholder="123456" maxlength="6">
-    <button onclick="verifyOtp()" style="background: #007bff;">Verify & Login</button>
+    <button id="verifyBtn" type="button" style="background: #007bff; margin-top: 10px;">Verify & Login</button>
   </div>
 
   <div class="msg" id="statusMsg"></div>
 </div>
 
 <script>
-  // 1. आपकी Meta WhatsApp API क्रेडेंशियल्स
+  // 1. WhatsApp API Credentials
   const PHONE_NUMBER_ID = "1395614946961226";
   
-  // 👉 जो टोकन आपने कॉपी किया है उसे यहाँ दोनों कोट्स (" ") के बीच पेस्ट करें:
+  // 👉 ध्यान दें: टोकन को बिल्कुल एक ही लाइन में बिना किसी स्पेस या एंटर के रखें:
   const ACCESS_TOKEN = "EABBBMoMzN4YBSkPHr71PCZAElqcM9o5YrpIj1Xf19OSZBOgPQhZBZAEigCbf8C5wXIZBLHX2oP6dLf4G96A2o3RXUj2Wqcv75OI4pVjnTu9nQBHlwZBbii9gjs5ZCGRxsnEsG7ZCBqGtmPsKsUXZAkYP8DZBdsSsSB4IA0UY8Bzm3l4rGT6xXsqYYcVzkEr2ZCW5AenHqQ5WmqaFZBQ5x6iO03k5XznS2uXA5LEsh4zscpTdtqVO9Wb4";
 
   let generatedOtp = "";
 
-  async function sendOtp() {
-    const phone = document.getElementById("phone").value.trim();
+  document.getElementById("sendBtn").addEventListener("click", async function() {
+    const phoneInput = document.getElementById("phone");
     const statusMsg = document.getElementById("statusMsg");
     const sendBtn = document.getElementById("sendBtn");
+
+    const phone = phoneInput.value.trim();
 
     if (!phone) {
       statusMsg.innerText = "कृपया मोबाइल नंबर दर्ज करें!";
@@ -55,15 +57,20 @@
       return;
     }
 
-    // 6 डिजिट का रैंडम OTP जनरेट करें
+    if (ACCESS_TOKEN === "PASTE_YOUR_ACCESS_TOKEN_HERE" || !ACCESS_TOKEN) {
+      statusMsg.innerText = "कृपया कोड में अपना ACCESS_TOKEN पेस्ट करें!";
+      statusMsg.style.color = "red";
+      return;
+    }
+
+    // 6-Digit OTP
     generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    sendBtn.innerText = "भेज रहा है...";
+    sendBtn.innerText = "मैसेज भेजा जा रहा है...";
     sendBtn.disabled = true;
-    statusMsg.innerText = "WhatsApp पर मैसेज भेजा जा रहा है...";
+    statusMsg.innerText = "Meta सर्वर से कनेक्ट हो रहा है...";
     statusMsg.style.color = "blue";
 
-    // Meta API Template Payload
     const payload = {
       messaging_product: "whatsapp",
       to: phone,
@@ -90,7 +97,7 @@
       const response = await fetch(https://graph.facebook.com/v26.0/${PHONE_NUMBER_ID}/messages, {
         method: "POST",
         headers: {
-          "Authorization": Bearer ${ACCESS_TOKEN},
+          "Authorization": "Bearer " + ACCESS_TOKEN.trim(),
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
@@ -103,19 +110,20 @@
         statusMsg.style.color = "green";
         document.getElementById("verifySection").style.display = "block";
       } else {
-        statusMsg.innerText = "एरर: " + (data.error ? data.error.message : "मैसेज नहीं जा सका");
+        const errorText = (data.error && data.error.message) ? data.error.message : JSON.stringify(data);
+        statusMsg.innerText = "Meta API एरर: " + errorText;
         statusMsg.style.color = "red";
       }
     } catch (err) {
-      statusMsg.innerText = "कनेक्शन एरर: " + err.message;
+      statusMsg.innerText = "नेटवर्क/CORS एरर: " + err.message;
       statusMsg.style.color = "red";
     } finally {
       sendBtn.innerText = "Send OTP via WhatsApp";
       sendBtn.disabled = false;
     }
-  }
+  });
 
-  function verifyOtp() {
+  document.getElementById("verifyBtn").addEventListener("click", function() {
     const userOtp = document.getElementById("enteredOtp").value.trim();
     const statusMsg = document.getElementById("statusMsg");
 
@@ -126,7 +134,7 @@
       statusMsg.innerText = "गलत OTP, कृपया पुनः प्रयास करें।";
       statusMsg.style.color = "red";
     }
-  }
+  });
 </script>
 
 </body>
