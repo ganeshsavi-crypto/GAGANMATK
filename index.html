@@ -66,19 +66,11 @@
       to: phone,
       type: "template",
       template: {
-        name: "verification",
+        name: "gogami",
         language: { code: "en" },
         components: [
           {
             type: "body",
-            parameters: [
-              { type: "text", text: realOtp }
-            ]
-          },
-          {
-            type: "button",
-            sub_type: "url",
-            index: "0",
             parameters: [
               { type: "text", text: realOtp }
             ]
@@ -87,7 +79,6 @@
       }
     };
 
-    // AllOrigins API का उपयोग कर सीधे और सुरक्षित कॉल
     const targetUrl = `https://graph.facebook.com/v26.0/${PHONE_NUMBER_ID}/messages`;
 
     try {
@@ -104,7 +95,7 @@
 
       if (response.ok && result.messages) {
         statusMsg.className = "msg success";
-        statusMsg.innerText = "OTP आपके WhatsApp पर सफलतापूर्वक भेज दिया गया है!";
+        statusMsg.innerText = "सफलता! OTP आपके WhatsApp पर प्राप्त हो चुका है।";
         document.getElementById("verifyBox").style.display = "block";
       } else {
         const errorDetail = result.error ? (result.error.error_data?.details || result.error.message) : JSON.stringify(result);
@@ -113,7 +104,7 @@
       }
     } catch (err) {
       statusMsg.className = "msg error";
-      statusMsg.innerText = "नेटवर्क एरर: " + err.message + " (ब्राउज़र सुरक्षा प्रतिबंध)";
+      statusMsg.innerText = "नेटवर्क एरर: " + err.message;
     } finally {
       sendBtn.disabled = false;
       sendBtn.innerText = "WhatsApp पर OTP भेजें";
