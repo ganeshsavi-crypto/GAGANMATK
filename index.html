@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gogami WhatsApp OTP Verification</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f2f5; margin: 0; }
+    .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 340px; }
+    h3 { margin-top: 0; color: #111; text-align: center; }
+    label { font-size: 13px; font-weight: bold; color: #555; }
+    input { width: 100%; padding: 12px; margin: 8px 0 15px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+    button { width: 100%; padding: 12px; background: #25D366; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    button:hover { background: #128C7E; }
+    .msg { margin-top: 15px; font-size: 14px; text-align: center; font-weight: bold; }
+    .verify-box { display: none; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h3>Gogami Login</h3>
+  
+  <label>WhatsApp Number (Country Code के साथ):</label>
+  <input type="text" id="phone" value="919353402523" placeholder="उदा: 919353402523">
+  
+  <button id="sendBtn" onclick="sendOtp()">Send OTP via WhatsApp</button>
+
+  <div class="verify-box" id="verifySection">
+    <label>WhatsApp पर आया 6-Digit OTP डालें:</label>
+    <input type="text" id="enteredOtp" placeholder="123456" maxlength="6">
+    <button onclick="verifyOtp()" style="background: #007bff;">Verify & Login</button>
+  </div>
+
+  <div class="msg" id="statusMsg"></div>
+</div>
+
+<script>
+  // 1. आपकी Meta WhatsApp API क्रेडेंशियल्स
+  const PHONE_NUMBER_ID = "1395614946961226";
+  
+  // 👉 जो टोकन आपने कॉपी किया है उसे यहाँ दोनों कोट्स (" ") के बीच पेस्ट करें:
+  const ACCESS_TOKEN = "EABBBMoMzN4YBSkPHr71PCZAElqcM9o5YrpIj1Xf19OSZBOgPQhZBZAEigCbf8C5wXIZBLHX2oP6dLf4G96A2o3RXUj2Wqcv75OI4pVjnTu9nQBHlwZBbii9gjs5ZCGRxsnEsG7ZCBqGtmPsKsUXZAkYP8DZBdsSsSB4IA0UY8Bzm3l4rGT6xXsqYYcVzkEr2ZCW5AenHqQ5WmqaFZBQ5x6iO03k5XznS2uXA5LEsh4zscpTdtqVO9Wb4";
+
+  let generatedOtp = "";
+
+  async function sendOtp() {
+    const phone = document.getElementById("phone").value.trim();
+    const statusMsg = document.getElementById("statusMsg");
+    const sendBtn = document.getElementById("sendBtn");
+
+    if (!phone) {
+      statusMsg.innerText = "कृपया मोबाइल नंबर दर्ज करें!";
+      statusMsg.style.color = "red";
+      return;
+    }
+
+    // 6 डिजिट का रैंडम OTP जनरेट करें
+    generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    sendBtn.innerText = "भेज रहा है...";
+    sendBtn.disabled = true;
+    statusMsg.innerText = "WhatsApp पर मैसेज भेजा जा रहा है...";
+    statusMsg.style.color = "blue";
+
+    // Meta API Template Payload
+    const payload = {
+      messaging_product: "whatsapp",
+      to: phone,
+      type: "template",
+      template: {
+        name: "verification",
+        language: { code: "en" },
+        components: [
+          {
+            type: "body",
+            parameters: [{ type: "text", text: generatedOtp }]
+          },
+          {
+            type: "button",
+            sub_type: "url",
+            index: "0",
+            parameters: [{ type: "text", text: generatedOtp }]
+          }
+        ]
+      }
+    };
+
+    try {
+      const response = await fetch(https://graph.facebook.com/v26.0/${PHONE_NUMBER_ID}/messages, {
+        method: "POST",
+        headers: {
+          "Authorization": Bearer ${ACCESS_TOKEN},
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        statusMsg.innerText = "OTP आपके WhatsApp पर भेज दिया गया है!";
+        statusMsg.style.color = "green";
+        document.getElementById("verifySection").style.display = "block";
+      } else {
+        statusMsg.innerText = "एरर: " + (data.error ? data.error.message : "मैसेज नहीं जा सका");
+        statusMsg.style.color = "red";
+      }
+    } catch (err) {
+      statusMsg.innerText = "कनेक्शन एरर: " + err.message;
+      statusMsg.style.color = "red";
+    } finally {
+      sendBtn.innerText = "Send OTP via WhatsApp";
+      sendBtn.disabled = false;
+    }
+  }
+
+  function verifyOtp() {
+    const userOtp = document.getElementById("enteredOtp").value.trim();
+    const statusMsg = document.getElementById("statusMsg");
+
+    if (userOtp === generatedOtp) {
+      statusMsg.innerText = "सफलता! OTP वेरिफाई हो गया। लॉगिन सफल!";
+      statusMsg.style.color = "green";
+    } else {
+      statusMsg.innerText = "गलत OTP, कृपया पुनः प्रयास करें।";
+      statusMsg.style.color = "red";
+    }
+  }
+</script>
+
+</body>
+</html>
