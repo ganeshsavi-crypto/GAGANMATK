@@ -10,7 +10,7 @@
     h2 { margin-top: 0; color: #1e293b; font-size: 22px; }
     p { color: #64748b; font-size: 14px; margin-bottom: 20px; }
     input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline: none; }
-    button { width: 100%; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    button { width: 100%; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
     button:hover { background: #1ebc57; }
     button:disabled { background: #94a3b8; cursor: not-allowed; }
     .msg { margin-top: 15px; font-size: 13px; font-weight: 600; word-break: break-word; }
@@ -26,19 +26,18 @@
   <h2>Gogami Verification</h2>
   <p>अपना WhatsApp नंबर दर्ज करके OTP प्राप्त करें</p>
 
-  <input type="text" id="phone" value="919353402523" placeholder="कंट्री कोड सहित नंबर (उदा: 919353402523)">
+  <input type="text" id="phone" value="919353402523" placeholder="कंट्री कोड सहित नंबर">
   <button id="sendBtn" onclick="handleSendOtp()">WhatsApp पर OTP भेजें</button>
 
   <div class="verify-box" id="verifyBox">
     <input type="text" id="otpInput" placeholder="6 अंकों का OTP दर्ज करें" maxlength="6">
-    <button onclick="handleVerifyOtp()" style="background: #0284c7;">सत्यापित करें (Verify)</button>
+    <button onclick="handleVerifyOtp()" style="background: #0284c7; margin-top: 10px;">सत्यापित करें (Verify)</button>
   </div>
 
   <div class="msg" id="statusMsg"></div>
 </div>
 
 <script>
-  // आपकी जाँची-परखी क्रेडेंशियल्स
   const PHONE_NUMBER_ID = "1395614946961226";
   const ACCESS_TOKEN = "EABBBMoMzN4YBSqMa8ZBnCoEVHZCsb8YTHl8npGxuJqsISGw67DDNf2vneaEisZBFXWSD5KG4uBks1dk13Sck2ZBkc1QF0tg5sneueE5Ck7zN4Tl7MtGRwpy4k2ER53iaZA68FpTopc7AItyDpXzODs9Wgf3U3X5cKhNvR4aYc65QTkxOyxCkASi6sjNXAqAZDZD";
 
@@ -62,7 +61,6 @@
     statusMsg.className = "msg info";
     statusMsg.innerText = "WhatsApp सर्वर से संपर्क किया जा रहा है...";
 
-    // Authentication Template का आधिकारिक पेलोड
     const payload = {
       messaging_product: "whatsapp",
       to: phone,
@@ -89,12 +87,11 @@
       }
     };
 
-    // ब्राउज़र CORS रोकने के लिए प्रॉक्सी का उपयोग
+    // AllOrigins API का उपयोग कर सीधे और सुरक्षित कॉल
     const targetUrl = `https://graph.facebook.com/v26.0/${PHONE_NUMBER_ID}/messages`;
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
 
     try {
-      const response = await fetch(proxyUrl, {
+      const response = await fetch(targetUrl, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${ACCESS_TOKEN}`,
@@ -116,7 +113,7 @@
       }
     } catch (err) {
       statusMsg.className = "msg error";
-      statusMsg.innerText = "नेटवर्क एरर: " + err.message;
+      statusMsg.innerText = "नेटवर्क एरर: " + err.message + " (ब्राउज़र सुरक्षा प्रतिबंध)";
     } finally {
       sendBtn.disabled = false;
       sendBtn.innerText = "WhatsApp पर OTP भेजें";
